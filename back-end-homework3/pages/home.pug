@@ -5,5 +5,10 @@ ul(style="list-style:none; padding:0;")
   each user in users
     li(style="border: 1px solid #cccccce6; margin-bottom:10px; padding:10px; display:flex; justify-content:space-between; align-items:center; border-radius:5px; background-color:#f9f9f9;")
       span #{user.name} #{user.surname}
-      form(action=`/delete-user/${user.id}` method="post" style="margin:0")
-        button(type="submit" style="background-color: red; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;") Delete
+      div(style="display:flex;justify-content: space-between")
+        form(action=`/delete-user/${user.id}` method="post" style="margin:0")
+          button(type="submit" style="background-color: red; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;") Delete
+
+        form(action=`/edit-user/${user.id}` method="get" style="margin: 0")
+          button(type="submit" style="background-color: orange; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;") Edit
+

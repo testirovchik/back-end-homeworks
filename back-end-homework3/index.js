@@ -29,8 +29,22 @@ app.post("/delete-user/:id", async (req, res) => {
 app.post("/add", async (req, res) => {
     const newUser = req.body;
     newUser.id = Date.now();
-    await writeUsers("./lib/data.json", newUser)
-    res.redirect("/")
+    await writeUsers("./lib/data.json", newUser);
+    res.redirect("/");
+})
+
+app.get("/edit-user/:id", (req, res) => {
+    const userId = req.params.id;
+    res.render("edit-user.pug", {userId});
+})
+
+app.post("/edit-user/:id", async (req, res) => {
+    const userId = req.params.id;
+    const userItem = req.body;
+    const users = await readAllUsers("./lib/data.json");
+    const filteredUsers = users.map(user => user.id == userId? {...userItem, id:userId}: user);
+    await writeFile("./lib/data.json", JSON.stringify(filteredUsers));
+    res.redirect("/");
 })
 
 

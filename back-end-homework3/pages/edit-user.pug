@@ -1,0 +1,9 @@
+div(style="max-width:400px; margin:20px auto; padding:20px; border:1px solid #ccc; border-radius:8px; background-color:#f9f9f9;")
+    form(action=`/edit-user/${userId}` method="post" style="display:flex; flex-direction:column; gap:15px;")
+        div
+            label(for="name" style="display:block; margin-bottom:5px; font-weight:bold;") Name
+            input(type="text" name="name" id="name" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;")
+        div
+            label(for="surname" style="display:block; margin-bottom:5px; font-weight:bold;") Surname
+            input(type="text" name="surname" id="surname" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;")
+        button(type="submit" style="padding:10px; background-color:#4CAF50; color:white; border:none; border-radius:5px; cursor:pointer; font-weight:bold;") Save
