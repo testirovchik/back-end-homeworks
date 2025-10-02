@@ -1,0 +1,33 @@
+# Node modules - պետք է միշտ ignore անել
+node_modules/
+
+# Environment variables
+.env
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Sequelize CLI generated files (եթե լինեն)
+sequelize-cli/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# IDE/editor files
+.vscode/
+.idea/
+
+# Optional cache / build files
+.npm
+.eslintcache
+
+# Swagger docs (եթե չես ուզում պահել GitHub-ում)
+docs/
+
+# MySQL data / temporary files (եթե ստեղծում ես)
+*.sql
