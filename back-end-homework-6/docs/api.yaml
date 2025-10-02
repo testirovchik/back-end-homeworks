@@ -1,0 +1,243 @@
+openapi: 3.0.0
+info:
+  title: Erik's Api
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:4002
+
+tags:
+  - name: Authentication
+    description: User authentication routes
+
+paths:
+  /auth/signup:
+    post:
+      summary: User signup
+      description: Գրանցում նոր օգտագործողի։ Վալիդացիա՝ name, surname, login, password դաշտեր պարտադիր են։ Password պետք է լինի նվազագույն 8 նիշ, login պետք է լինի unique։
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - surname
+                - login
+                - password
+              properties:
+                name:
+                  type: string
+                  example: Erik
+                surname:
+                  type: string
+                  example: Musk
+                login:
+                  type: string
+                  example: erik123
+                password:
+                  type: string
+                  format: password
+                  minLength: 8
+                  description: >
+                    Password պետք է լինի նվազագույնը 8 նիշ,
+                    պարունակի մեծատառ, փոքրատառ, թիվ և հատուկ նիշ։
+                  example: StrongPass123!
+      responses:
+        '201':
+          description: Successfully signed up
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Successfully signed up!
+        '400':
+          description: Missing fields or validation errors
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              examples:
+                fillCredentials:
+                  summary: Missing required fields
+                  value:
+                    message: "fill your credentials!"
+                loginBusy:
+                  summary: Login already exists
+                  value:
+                    message: "Login is busy!"
+        '401':
+          description: Password too short
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Password is too short!"
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Server error!"
+
+  /auth/login:
+    post:
+      summary: User login
+      description: Մուտք գործել օգտագործողի հաշիվը՝ ստանալով JWT token
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - login
+                - password
+              properties:
+                login:
+                  type: string
+                  example: erik123
+                password:
+                  type: string
+                  format: password
+                  example: StrongPass123!
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        '400':
+          description: Missing login or password
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "fill your credentials"
+        '404':
+          description: User not found or wrong password
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              examples:
+                wrongCredentials:
+                  summary: User not found
+                  value:
+                    message: "wrong credentials!"
+                invalidPassword:
+                  summary: Password mismatch
+                  value:
+                    message: "wrong credentials!"
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Server error!"
+
+  /auth/user:
+    get:
+      summary: Get current user info
+      description: Վերադարձնում է միայն user-ի անունն ու ազգանունը՝ JWT token-ի հիման վրա
+      tags:
+        - Authentication
+      security:
+        - bearerAuth: [] 
+      responses:
+        '200':
+          description: Current user info
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        example: Erik
+                      surname:
+                        type: string
+                        example: Musk
+        '401':
+          description: No token provided
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "please provide a token"
+        '403':
+          description: Invalid or expired token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "invalid token!"
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User not found"
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Server error!"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
