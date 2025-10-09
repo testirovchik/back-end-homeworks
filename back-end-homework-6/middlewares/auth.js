@@ -15,7 +15,7 @@ export const authMiddleWare = async(req, res, next) => {
         }
         const user = await User.findOne({where: {id: data.id}})
         const {name, surname } =  user.dataValues;
-        req.user = {name, surname}
+        req.user = {name, surname};
         next();
     })
 }

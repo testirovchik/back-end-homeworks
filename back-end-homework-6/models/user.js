@@ -10,7 +10,10 @@ const User = sequelize.define("User", {
     name: DataTypes.STRING,
     surname: DataTypes.STRING,
     login: DataTypes.STRING,
-    password: DataTypes.STRING
+    password: DataTypes.STRING,
+    attemps: {
+        type: DataTypes.INTEGER,
+    }
 },{tableName:"users", timestamps: false});
 
 export default User;
