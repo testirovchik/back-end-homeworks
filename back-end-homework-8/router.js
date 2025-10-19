@@ -59,6 +59,21 @@ router.post("/login", async (req, res) => {
   }
 });
 
+router.get("/", async (req, res) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) {
+    return res.status(400).send({ message: "Please provide a token" });
+  }
+  const token = authHeader.split(" ")[1];
+  jwt.verify(token, process.env.JWT_SECRET, async (err, data) => {
+    if (err) {
+      res.status(400).send({ message: "invalid token" });
+    }
+    const user = await User.findOne({_id: data.id});
+    return res.status(200).send({message:{ id: data.id, name: user.name, surname: user.surname }})
+  });
+});
+
 router.post("/forgot-password", async (req, res) => {
   try {
     const { login } = req.body;
@@ -105,8 +120,10 @@ router.post("/reset-password", async (req, res) => {
     if (!found) {
       return res.status(400).send({ message: "There is no such a user" });
     }
-    if(!found.fgpsw) {
-        return res.status(400).send({message: "At first apply forgot-password endpoint"})
+    if (!found.fgpsw) {
+      return res
+        .status(400)
+        .send({ message: "At first apply forgot-password endpoint" });
     }
 
     if (code === found.fgpsw) {
